@@ -1,0 +1,235 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+// ================================
+// USER MANAGEMENT
+// ================================
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String?
+  avatar      String?
+  timezone    String   @default("UTC")
+  preferences Json?    // User preferences as JSON
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  socialAccounts SocialAccount[]
+  insights       AIInsight[]
+  apiKeys        ApiKey[]
+
+  @@map("users")
+  @@index([email])
+  @@index([createdAt])
+}
+
+// ================================
+// SOCIAL MEDIA ACCOUNTS
+// ================================
+
+model SocialAccount {
+  id           String    @id @default(cuid())
+  userId       String
+  platform     Platform
+  accountId    String    // Platform-specific account ID
+  username     String?
+  displayName  String?
+  followerCount Int?
+  followingCount Int?
+  accessToken  String
+  refreshToken String?
+  tokenExpiresAt DateTime?
+  isActive     Boolean   @default(true)
+  connectedAt  DateTime  @default(now())
+  lastSyncAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  posts Post[]
+
+  @@unique([userId, platform])
+  @@map("social_accounts")
+  @@index([platform])
+  @@index([lastSyncAt])
+  @@index([isActive])
+}
+
+// ================================
+// POSTS AND CONTENT
+// ================================
+
+model Post {
+  id               String    @id @default(cuid())
+  socialAccountId  String
+  postId           String    // Platform-specific post ID
+  content          String?
+  mediaUrls        String[]  // Array of media URLs
+  postType         PostType  @default(TEXT)
+  postDate         DateTime
+  
+  // Engagement Metrics
+  likesCount       Int       @default(0)
+  commentsCount    Int       @default(0)
+  sharesCount      Int       @default(0)
+  viewsCount       Int?
+  engagementRate   Float?
+  
+  // Metadata
+  hashtags         String[]  // Extracted hashtags
+  mentions         String[]  // Extracted mentions
+  language         String?   // Detected language
+  isDeleted        Boolean   @default(false)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Relations
+  socialAccount    SocialAccount     @relation(fields: [socialAccountId], references: [id], onDelete: Cascade)
+  analyticsResults AnalyticsResult[]
+
+  @@unique([socialAccountId, postId])
+  @@map("posts")
+  @@index([postDate])
+  @@index([socialAccountId, postDate])
+  @@index([isDeleted])
+}
+
+// ================================
+// ANALYTICS AND INSIGHTS
+// ================================
+
+model AnalyticsResult {
+  id              String   @id @default(cuid())
+  postId          String
+  
+  // Sentiment Analysis
+  sentimentScore  Float?   // -1 to 1 (negative to positive)
+  sentimentLabel  String?  // "positive", "negative", "neutral"
+  confidence      Float?   // 0 to 1
+  
+  // Engagement Analysis
+  engagementScore Float?   // Calculated engagement score
+  viralityScore   Float?   // Potential virality score
+  
+  // Performance Metrics
+  performanceScore Float?  // Overall performance score
+  optimalPostTime  DateTime? // Suggested optimal posting time
+  
+  // Processing Metadata
+  processingVersion String  @default("1.0")
+  processedAt      DateTime @default(now())
+  createdAt        DateTime @default(now())
+
+  // Relations
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@map("analytics_results")
+  @@index([postId])
+  @@index([processedAt])
+}
+
+model AIInsight {
+  id           String      @id @default(cuid())
+  userId       String
+  insightType  InsightType
+  title        String      // Human-readable title
+  description  String?     // Detailed description
+  insightData  Json        // Structured insight data
+  confidence   Float?      // 0 to 1 confidence score
+  priority     Priority    @default(MEDIUM)
+  isActive     Boolean     @default(true)
+  validUntil   DateTime?   // When insight expires
+  generatedAt  DateTime    @default(now())
+  createdAt    DateTime    @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("ai_insights")
+  @@index([userId, insightType])
+  @@index([generatedAt])
+  @@index([isActive])
+}
+
+// ================================
+// API MANAGEMENT
+// ================================
+
+model ApiKey {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String   // User-defined name for the key
+  keyHash     String   @unique // Hashed API key
+  permissions Json     // Permissions array
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("api_keys")
+  @@index([keyHash])
+  @@index([userId])
+}
+
+// ================================
+// ENUMS
+// ================================
+
+enum Platform {
+  TWITTER
+  INSTAGRAM
+  LINKEDIN
+  FACEBOOK
+  TIKTOK
+  YOUTUBE
+
+  @@map("platform")
+}
+
+enum PostType {
+  TEXT
+  IMAGE
+  VIDEO
+  CAROUSEL
+  STORY
+  REEL
+  LIVE
+
+  @@map("post_type")
+}
+
+enum InsightType {
+  BEST_POST_TIME
+  HASHTAG_RECOMMENDATIONS
+  SENTIMENT_TREND
+  ENGAGEMENT_PATTERN
+  AUDIENCE_ANALYSIS
+  CONTENT_PERFORMANCE
+  GROWTH_OPPORTUNITIES
+  COMPETITIVE_ANALYSIS
+
+  @@map("insight_type")
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+
+  @@map("priority")
+}
