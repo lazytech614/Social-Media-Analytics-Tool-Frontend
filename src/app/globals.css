@@ -24,3 +24,210 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@theme {
+  /* Define your color palette */
+  --color-primary: #2563eb;
+  --color-primary-foreground: #f8fafc;
+  --color-secondary: #64748b;
+  --color-secondary-foreground: #f1f5f9;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-accent: #f1f5f9;
+  --color-accent-foreground: #0f172a;
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #fefefe;
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #2563eb;
+  --color-background: #ffffff;
+  --color-foreground: #0f172a;
+  --color-card: #ffffff;
+  --color-card-foreground: #0f172a;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0f172a;
+
+  /* Dark mode colors */
+  --color-dark-primary: #3b82f6;
+  --color-dark-primary-foreground: #1e293b;
+  --color-dark-secondary: #1e293b;
+  --color-dark-secondary-foreground: #f8fafc;
+  --color-dark-muted: #1e293b;
+  --color-dark-muted-foreground: #94a3b8;
+  --color-dark-accent: #1e293b;
+  --color-dark-accent-foreground: #f8fafc;
+  --color-dark-destructive: #7f1d1d;
+  --color-dark-destructive-foreground: #f8fafc;
+  --color-dark-border: #1e293b;
+  --color-dark-input: #1e293b;
+  --color-dark-ring: #1d4ed8;
+  --color-dark-background: #020617;
+  --color-dark-foreground: #f8fafc;
+  --color-dark-card: #020617;
+  --color-dark-card-foreground: #f8fafc;
+  --color-dark-popover: #020617;
+  --color-dark-popover-foreground: #f8fafc;
+
+  /* Font families */
+  --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+
+  /* Breakpoints */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* Animations */
+  --animate-fade-in: fadeIn 0.5s ease-in-out;
+  --animate-slide-up: slideUp 0.3s ease-out;
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: var(--color-dark-primary);
+    --color-primary-foreground: var(--color-dark-primary-foreground);
+    --color-secondary: var(--color-dark-secondary);
+    --color-secondary-foreground: var(--color-dark-secondary-foreground);
+    --color-muted: var(--color-dark-muted);
+    --color-muted-foreground: var(--color-dark-muted-foreground);
+    --color-accent: var(--color-dark-accent);
+    --color-accent-foreground: var(--color-dark-accent-foreground);
+    --color-destructive: var(--color-dark-destructive);
+    --color-destructive-foreground: var(--color-dark-destructive-foreground);
+    --color-border: var(--color-dark-border);
+    --color-input: var(--color-dark-input);
+    --color-ring: var(--color-dark-ring);
+    --color-background: var(--color-dark-background);
+    --color-foreground: var(--color-dark-foreground);
+    --color-card: var(--color-dark-card);
+    --color-card-foreground: var(--color-dark-card-foreground);
+    --color-popover: var(--color-dark-popover);
+    --color-popover-foreground: var(--color-dark-popover-foreground);
+  }
+}
+
+.dark {
+  --color-primary: var(--color-dark-primary);
+  --color-primary-foreground: var(--color-dark-primary-foreground);
+  --color-secondary: var(--color-dark-secondary);
+  --color-secondary-foreground: var(--color-dark-secondary-foreground);
+  --color-muted: var(--color-dark-muted);
+  --color-muted-foreground: var(--color-dark-muted-foreground);
+  --color-accent: var(--color-dark-accent);
+  --color-accent-foreground: var(--color-dark-accent-foreground);
+  --color-destructive: var(--color-dark-destructive);
+  --color-destructive-foreground: var(--color-dark-destructive-foreground);
+  --color-border: var(--color-dark-border);
+  --color-input: var(--color-dark-input);
+  --color-ring: var(--color-dark-ring);
+  --color-background: var(--color-dark-background);
+  --color-foreground: var(--color-dark-foreground);
+  --color-card: var(--color-dark-card);
+  --color-card-foreground: var(--color-dark-card-foreground);
+  --color-popover: var(--color-dark-popover);
+  --color-popover-foreground: var(--color-dark-popover-foreground);
+}
+
+/* Custom keyframes for animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    transform: translateY(10px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--color-muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--color-muted-foreground));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--color-foreground) / 0.8);
+}
+
+/* Add this to your existing globals.css */
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Gradient text animation */
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 3s ease infinite;
+}
+
+/* Custom scrollbar for better UX */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #CBD5E0 #F7FAFC;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #F7FAFC;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #CBD5E0;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #A0AEC0;
+}
+
+/* Dark mode scrollbar */
+.dark *::-webkit-scrollbar-track {
+  background: #2D3748;
+}
+
+.dark *::-webkit-scrollbar-thumb {
+  background-color: #4A5568;
+}
+
+.dark *::-webkit-scrollbar-thumb:hover {
+  background-color: #718096;
+}
+
